@@ -1,5 +1,6 @@
 package monzgo
 
+// Pot definition
 type Pot struct {
 	ID       string
 	Name     string
@@ -11,6 +12,7 @@ type Pot struct {
 	Deleted  bool
 }
 
+// Pots - retrieve all pots for the user, optionally excluding deleted ones
 func (m *Monzgo) Pots(ignoreDeleted bool) ([]*Pot, error) {
 	rspHolder := &struct {
 		Pots []*Pot `json:"pots"`

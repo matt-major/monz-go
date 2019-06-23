@@ -22,13 +22,21 @@ func (e *MonzoError) Error() string {
 	return fmt.Sprintf("%s: %s", e.Code, e.Message)
 }
 
-func (m *Monzgo) request(requestMethod string, path string, response interface{}) error {
+func (m *Monzgo) request(requestMethod string, path string, response interface{}, queryParams map[string]string) error {
 	var request *http.Request
 	var err error
 
 	request, err = http.NewRequest(requestMethod, m.BaseURL+path, nil)
 	if err != nil {
 		return err
+	}
+
+	if len(queryParams) > 0 {
+		q := request.URL.Query()
+		for k, v := range queryParams {
+			q.Add(k, v)
+		}
+		request.URL.RawQuery = q.Encode()
 	}
 
 	return m.makeHTTPrequest(request, response)

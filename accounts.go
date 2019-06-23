@@ -25,12 +25,17 @@ type Account struct {
 	PaymentDetails map[string]PaymentDetailsLocale
 }
 
-func (m *Monzgo) Accounts() ([]*Account, error) {
+func (m *Monzgo) Accounts(typeFilter string) ([]*Account, error) {
+	requestParams := map[string]string{}
+	if typeFilter != "" {
+		requestParams["account_type"] = typeFilter
+	}
+
 	rspHolder := &struct {
 		Accounts []*Account `json:"accounts"`
 	}{}
 
-	if err := m.request("GET", "accounts", rspHolder); err != nil {
+	if err := m.request("GET", "accounts", rspHolder, requestParams); err != nil {
 		return nil, err
 	}
 

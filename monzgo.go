@@ -7,11 +7,13 @@ import (
 	"net/http"
 )
 
+// Monzgo client
 type Monzgo struct {
 	APIKey  string
 	BaseURL string
 }
 
+// MonzoError - API error definition
 type MonzoError struct {
 	StatusCode int
 	Code       string

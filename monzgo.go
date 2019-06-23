@@ -49,9 +49,15 @@ func (m *Monzgo) makeHTTPrequest(request *http.Request, response interface{}) er
 	}
 
 	if res.StatusCode != 200 {
-		return &MonzoError{
+		monzoErr := &MonzoError{
 			StatusCode: res.StatusCode,
 		}
+
+		if err := json.Unmarshal(bytes, monzoErr); err != nil {
+			return fmt.Errorf("Error during JSON umarshalling %d error: %v", res.StatusCode, err)
+		}
+
+		return monzoErr
 	}
 
 	if err := json.Unmarshal(bytes, response); err != nil {

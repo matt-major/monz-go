@@ -2,10 +2,10 @@ package monzgo
 
 // Balance response definition
 type Balance struct {
-	Balance      int64
-	TotalBalance int64 `json:"total_balance"`
-	Currency     string
-	SpendToday   int64 `json:"spend_today"`
+	Balance      int64  `json:"balance"`
+	TotalBalance int64  `json:"total_balance"`
+	Currency     string `json:"currency"`
+	SpendToday   int64  `json:"spend_today"`
 }
 
 // Balance - get the balance for a given accountID

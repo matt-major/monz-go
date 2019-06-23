@@ -15,17 +15,17 @@ type PaymentDetailsLocale struct {
 
 // Account - top level Account definition
 type Account struct {
-	ID             string
-	Closed         bool
-	Created        string
-	Description    string
-	Type           string
-	Currency       string
-	CountryCode    string `json:"country_code"`
-	Owners         []Owner
-	AccountNumber  string `json:"account_number"`
-	SortCode       string `json:"sort_code"`
-	PaymentDetails map[string]PaymentDetailsLocale
+	ID             string                          `json:"id"`
+	Closed         bool                            `json:"closed"`
+	Created        string                          `json:"created"`
+	Description    string                          `json:"description"`
+	Type           string                          `json:"types"`
+	Currency       string                          `json:"currency"`
+	CountryCode    string                          `json:"country_code"`
+	Owners         []Owner                         `json:"owners"`
+	AccountNumber  string                          `json:"account_number"`
+	SortCode       string                          `json:"sort_code"`
+	PaymentDetails map[string]PaymentDetailsLocale `json:"paymentdetails"`
 }
 
 // Accounts - get all accounts with an optional type filter

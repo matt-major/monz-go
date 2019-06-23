@@ -2,14 +2,14 @@ package monzgo
 
 // Pot definition
 type Pot struct {
-	ID       string
-	Name     string
-	Style    string
-	Balance  int64
-	Currency string
-	Created  string
-	Updated  string
-	Deleted  bool
+	ID       string `json:"id"`
+	Name     string `json:"name"`
+	Style    string `json:"style"`
+	Balance  int64  `json:"balance"`
+	Currency string `json:"currency"`
+	Created  string `json:"created"`
+	Updated  string `json:"updated"`
+	Deleted  bool   `json:"deleted"`
 }
 
 // Pots - retrieve all pots for the user, optionally excluding deleted ones

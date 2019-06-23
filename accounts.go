@@ -25,9 +25,14 @@ type Account struct {
 	PaymentDetails map[string]PaymentDetailsLocale
 }
 
-type Balance struct {
-	Balance     int
-	Total       int `json:"total_balance"`
-	WithSavings int `json:"balance_including_flexible_savings"`
-	Currency    string
+func (m *Monzgo) Accounts() ([]*Account, error) {
+	rspHolder := &struct {
+		Accounts []*Account `json:"accounts"`
+	}{}
+
+	if err := m.request("GET", "accounts", rspHolder); err != nil {
+		return nil, err
+	}
+
+	return rspHolder.Accounts, nil
 }

@@ -3,69 +3,58 @@ package monzgo
 import (
 	"encoding/json"
 	"fmt"
-	"io"
-	"log"
+	"io/ioutil"
 	"net/http"
 )
 
-const BASE_URL string = "https://api.monzo.com"
-
 type Monzgo struct {
-	APIKey string
-	http.Client
+	APIKey  string
+	BaseURL string
 }
 
-func Setup(apiKey string) *Monzgo {
-	if apiKey == "" {
-		log.Fatal("No Monzo API key provided")
-	}
-
-	return &Monzgo{
-		APIKey: apiKey,
-	}
+type MonzoError struct {
+	StatusCode int
+	Code       string
+	Message    string
 }
 
-func (m *Monzgo) Verify() error {
-	request, err := m.CreateRequest(http.MethodGet, "ping/whoami", nil)
+func (e *MonzoError) Error() string {
+	return fmt.Sprintf("%s: %s", e.Code, e.Message)
+}
+
+func (m *Monzgo) request(requestMethod string, path string, response interface{}) error {
+	var request *http.Request
+	var err error
+
+	request, err = http.NewRequest(requestMethod, m.BaseURL+path, nil)
 	if err != nil {
 		return err
 	}
 
-	response, _ := m.Do(request)
-
-	if response.StatusCode != http.StatusOK {
-		return fmt.Errorf("Failure")
-	}
-
-	return nil
+	return m.makeHTTPrequest(request, response)
 }
 
-func (m *Monzgo) CreateRequest(method string, path string, requestBody io.Reader) (*http.Request, error) {
-	request, err := http.NewRequest(method, BASE_URL+"/"+path, requestBody)
+func (m *Monzgo) makeHTTPrequest(request *http.Request, response interface{}) error {
+	request.Header.Add("Authorization", fmt.Sprintf("Bearer %s", m.APIKey))
+
+	res, err := http.DefaultClient.Do(request)
 	if err != nil {
-		return nil, err
+		return err
 	}
+	defer res.Body.Close()
 
-	request.Header.Add("Authorization", "Bearer "+m.APIKey)
-	return request, nil
-}
-
-func (m *Monzgo) Get(path string) (*http.Request, error) {
-	request, err := m.CreateRequest(http.MethodGet, path, nil)
+	bytes, err := ioutil.ReadAll(res.Body)
 	if err != nil {
-		return nil, err
-	}
-
-	return request, nil
-}
-
-func ParseResponse(data []byte, key string, t interface{}) error {
-	var keyMap map[string]*json.RawMessage
-	if err := json.Unmarshal(data, &keyMap); err != nil {
 		return err
 	}
 
-	if err := json.Unmarshal(*keyMap[key], t); err != nil {
+	if res.StatusCode != 200 {
+		return &MonzoError{
+			StatusCode: res.StatusCode,
+		}
+	}
+
+	if err := json.Unmarshal(bytes, response); err != nil {
 		return err
 	}
 

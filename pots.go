@@ -1,33 +1,41 @@
 package monzgo
 
-// Pot definition
-type Pot struct {
-	ID       string `json:"id"`
-	Name     string `json:"name"`
-	Style    string `json:"style"`
-	Balance  int64  `json:"balance"`
-	Currency string `json:"currency"`
-	Created  string `json:"created"`
-	Updated  string `json:"updated"`
-	Deleted  bool   `json:"deleted"`
-}
+import (
+	"strconv"
+)
 
 // Pots - retrieve all pots for the user, optionally excluding deleted ones
 func (m *Monzgo) Pots(ignoreDeleted bool) ([]*Pot, error) {
-	rspHolder := &struct {
+	response := &struct {
 		Pots []*Pot `json:"pots"`
 	}{}
 
-	if err := m.request("GET", "pots", rspHolder, nil); err != nil {
+	if err := m.request("GET", "pots", response, nil); err != nil {
 		return nil, err
 	}
 
-	pots := rspHolder.Pots
+	pots := response.Pots
 	if ignoreDeleted {
 		pots = filterPots(pots)
 	}
 
 	return pots, nil
+}
+
+// AddToPot - add the specified amount to a Pot from the provided Source Account
+func (m *Monzgo) AddToPot(potID string, sourceAccountID string, amount int64, dedupeID string) (*Pot, error) {
+	pot := &Pot{}
+
+	requestData := make(map[string]string)
+	requestData["source_account_id"] = sourceAccountID
+	requestData["amount"] = strconv.FormatInt(amount, 10)
+	requestData["dedupe_id"] = dedupeID
+
+	if err := m.request("PUT", "pots/"+potID+"/deposit", pot, requestData); err != nil {
+		return nil, err
+	}
+
+	return pot, nil
 }
 
 func filterPots(pots []*Pot) []*Pot {

@@ -38,6 +38,22 @@ func (m *Monzgo) AddToPot(potID string, sourceAccountID string, amount int64, de
 	return pot, nil
 }
 
+// WithdrawFromPot - withdraw the specified amount from a Pot in to the provided Destination Account
+func (m *Monzgo) WithdrawFromPot(potID string, destinationAccountID string, amount int64, dedupeID string) (*Pot, error) {
+	pot := &Pot{}
+
+	requestData := make(map[string]string)
+	requestData["destination_account_id"] = destinationAccountID
+	requestData["amount"] = strconv.FormatInt(amount, 10)
+	requestData["dedupe_id"] = dedupeID
+
+	if err := m.request("PUT", "pots/"+potID+"/withdraw", pot, requestData); err != nil {
+		return nil, err
+	}
+
+	return pot, nil
+}
+
 func filterPots(pots []*Pot) []*Pot {
 	filtered := make([]*Pot, 0)
 

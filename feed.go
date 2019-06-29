@@ -1,16 +1,6 @@
 package monzgo
 
-type FeedItemOptions struct {
-	Type            string
-	URL             string
-	Title           string
-	ImageURL        string
-	BackgroundColor string
-	BodyColor       string
-	TitleColor      string
-	Body            string
-}
-
+// AddFeedItem adds an item to the Feed for the specified Account ID
 func (m *Monzgo) AddFeedItem(accountID string, options FeedItemOptions) error {
 	requestData := make(map[string]string)
 	requestData["account_id"] = accountID
@@ -25,6 +15,5 @@ func (m *Monzgo) AddFeedItem(accountID string, options FeedItemOptions) error {
 
 	emptyRespHolder := &map[string]string{}
 
-	err := m.request("POST", "feed", emptyRespHolder, requestData)
-	return err
+	return m.request("POST", "feed", emptyRespHolder, requestData)
 }

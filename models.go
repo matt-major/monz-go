@@ -107,3 +107,15 @@ type Account struct {
 	SortCode       string                          `json:"sort_code"`
 	PaymentDetails map[string]PaymentDetailsLocale `json:"paymentdetails"`
 }
+
+// FeedItemOptions - Feed Item request options definition
+type FeedItemOptions struct {
+	Type            string
+	URL             string
+	Title           string
+	ImageURL        string
+	BackgroundColor string
+	BodyColor       string
+	TitleColor      string
+	Body            string
+}

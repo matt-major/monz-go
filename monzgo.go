@@ -57,7 +57,7 @@ func (m *Monzgo) createRequestWithQuery(path string, queryParams map[string]stri
 		request.URL.RawQuery = q.Encode()
 	}
 
-	return request, err
+	return request, nil
 }
 
 func (m *Monzgo) createRequestWithFormData(requestMethod string, path string, parameters map[string]string) (*http.Request, error) {

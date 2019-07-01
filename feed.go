@@ -13,7 +13,6 @@ func (m *Monzgo) AddFeedItem(accountID string, options FeedItemOptions) error {
 	requestData["params[title_color]"] = options.TitleColor
 	requestData["params[body]"] = options.Body
 
-	emptyRespHolder := &map[string]string{}
-
+	emptyRespHolder := make(map[string]string)
 	return m.request("POST", "feed", emptyRespHolder, requestData)
 }
